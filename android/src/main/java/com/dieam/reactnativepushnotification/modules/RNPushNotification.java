@@ -134,23 +134,30 @@ public class RNPushNotification extends ReactContextBaseJavaModule implements Ac
     }
 
     @ReactMethod
-    public void requestPermissions() {
-      final RNPushNotificationJsDelivery fMjsDelivery = mJsDelivery;
-      
-      FirebaseMessaging.getInstance().getToken()
-              .addOnCompleteListener(new OnCompleteListener<String>() {
-                  @Override
-                  public void onComplete(@NonNull Task<String> task) {
-                      if (!task.isSuccessful()) {
-                          Log.e(LOG_TAG, "exception", task.getException());
-                          return;
-                      }
+    public void getToken(Promise promise) {
+        final RNPushNotificationJsDelivery fMjsDelivery = mJsDelivery;
 
-                      WritableMap params = Arguments.createMap();
-                      params.putString("deviceToken", task.getResult());
-                      fMjsDelivery.sendEvent("remoteNotificationsRegistered", params);
-                  }
-              });
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.e(LOG_TAG, "exception", task.getException());
+                            return;
+                        }
+
+                        String token = task.getResult();
+                        WritableMap params = Arguments.createMap();
+                        params.putString("deviceToken", token);
+                        fMjsDelivery.sendEvent("remoteNotificationsRegistered", params);
+                        promise.resolve(token);
+                    }
+                });
+    }
+
+    @ReactMethod
+    public void requestPermissions(Promise promise) {
+        this.getToken(promise);
     }
 
     @ReactMethod

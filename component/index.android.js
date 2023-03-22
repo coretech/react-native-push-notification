@@ -28,6 +28,10 @@ NotificationsComponent.prototype.requestPermissions = function() {
 	RNPushNotification.requestPermissions();
 };
 
+NotificationsComponent.prototype.getToken = function() {
+	RNPushNotification.getToken();
+};
+
 NotificationsComponent.prototype.subscribeToTopic = function(topic) {
 	RNPushNotification.subscribeToTopic(topic);
 };

@@ -454,6 +454,13 @@ Notifications.requestPermissions = function() {
   }
 };
 
+Notifications.getToken = function() {
+  if (Platform.OS === 'android') {
+    return this.callNative( 'getToken', []);
+  }
+  // iOS is noop
+}
+
 /* Fallback functions */
 Notifications.subscribeToTopic = function() {
   return this.callNative('subscribeToTopic', arguments);
